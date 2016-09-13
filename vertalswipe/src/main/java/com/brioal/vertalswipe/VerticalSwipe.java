@@ -82,7 +82,7 @@ public class VerticalSwipe extends FrameLayout {
     }
     //设置组件是否显示
     public void setSwipeViewShowing(boolean show) {
-        if (show) {
+        if (!show) {
             mDragHelper.smoothSlideViewTo(mSwipeView, 0, mMainHeight);
             ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
         } else {
