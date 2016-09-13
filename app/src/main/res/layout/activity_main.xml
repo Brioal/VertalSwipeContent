@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.brioal.vertalswipe.VerticalSwipe
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.brioal.vertalswipecontent.MainActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorAccent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="350dp"
+            android:gravity="center"
+            android:text="Main"
+            android:textColor="@color/colorWhite"
+            android:textSize="30sp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="600dp"
+            android:gravity="center"
+            android:text="SwipeView"
+            android:textColor="@color/colorWhite"
+            android:textSize="30sp"/>
+    </RelativeLayout>
+</com.brioal.vertalswipe.VerticalSwipe>
