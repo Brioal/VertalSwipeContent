@@ -18,6 +18,7 @@ public class VerticalSwipe extends FrameLayout {
     private ViewDragHelper mDragHelper;
     int mMainHeight;
     int mSwipeHeight;
+    private boolean isShowing = false;
 
 
     public VerticalSwipe(Context context) {
@@ -69,6 +70,23 @@ public class VerticalSwipe extends FrameLayout {
                 }
             }
         });
+    }
+    //组件是否全部显示
+    public boolean isSwipeViewShowing() {
+        if (mSwipeView.getTop() == mMainHeight) {
+            isShowing = true;
+        }
+        return isShowing;
+    }
+    //设置组件是否显示
+    public void setSwipeViewShowing(boolean show) {
+        if (show) {
+            mDragHelper.smoothSlideViewTo(mSwipeView, 0, mMainHeight);
+            ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
+        } else {
+            mDragHelper.smoothSlideViewTo(mSwipeView, 0, getMeasuredHeight()-mSwipeHeight);
+            ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
+        }
     }
 
     @Override
