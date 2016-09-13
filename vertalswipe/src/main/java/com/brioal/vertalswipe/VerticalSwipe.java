@@ -74,6 +74,8 @@ public class VerticalSwipe extends FrameLayout {
     //组件是否全部显示
     public boolean isSwipeViewShowing() {
         if (mSwipeView.getTop() == mMainHeight) {
+            isShowing = false;
+        } else {
             isShowing = true;
         }
         return isShowing;
