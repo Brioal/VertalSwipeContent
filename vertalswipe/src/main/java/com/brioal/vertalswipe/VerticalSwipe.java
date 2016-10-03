@@ -8,6 +8,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 
+import com.brioal.vertalswipe.interfaces.OnSwipeListener;
+
 /**
  * Vertal Swipe Content
  * Created by Brioal on 2016/9/13.
@@ -19,6 +21,10 @@ public class VerticalSwipe extends FrameLayout {
     int mMainHeight;
     int mSwipeHeight;
     private boolean isShowing = false;
+    private float mProgress = 0;
+    private OnSwipeListener mSwipeListener;
+    private int mMaxOffsetMainView = 50;
+    private int mTop = 0;
 
 
     public VerticalSwipe(Context context) {
@@ -28,6 +34,10 @@ public class VerticalSwipe extends FrameLayout {
     public VerticalSwipe(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
+    }
+
+    public void setSwipeListener(OnSwipeListener swipeListener) {
+        mSwipeListener = swipeListener;
     }
 
     private void init() {
@@ -51,6 +61,12 @@ public class VerticalSwipe extends FrameLayout {
                     }
                     return getMeasuredHeight() - mSwipeView.getMeasuredHeight();
                 }
+                mProgress = (1 - (top - getMeasuredHeight() + mSwipeHeight) * 1.0f / (mMainHeight - getMeasuredHeight() + mSwipeHeight));
+                if (mSwipeListener != null) {
+                    mSwipeListener.progress(mProgress);
+                }
+                mTop = top;
+                requestLayout();
                 return top;
             }
 
@@ -61,16 +77,21 @@ public class VerticalSwipe extends FrameLayout {
                 if (topffset < 0) {
                     topffset = 0;
                 }
-                if (mSwipeView.getTop() > mMainHeight * 3 / 5) {
+                if (mSwipeView.getTop() > (mMainHeight - (getMeasuredHeight() - mSwipeHeight)) * 3 / 5) {
                     mDragHelper.smoothSlideViewTo(mSwipeView, 0, mMainHeight); //滑动到原本位置
                     ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
+                    mProgress = 0;
                 } else {
                     mDragHelper.smoothSlideViewTo(mSwipeView, 0, topffset); //滑动到原本位置
                     ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
+                    mProgress = 1;
                 }
+                mTop = releasedChild.getTop();
+                requestLayout();
             }
         });
     }
+
     //组件是否全部显示
     public boolean isSwipeViewShowing() {
         if (mSwipeView.getTop() == mMainHeight) {
@@ -80,13 +101,14 @@ public class VerticalSwipe extends FrameLayout {
         }
         return isShowing;
     }
+
     //设置组件是否显示
     public void setSwipeViewShowing(boolean show) {
         if (!show) {
             mDragHelper.smoothSlideViewTo(mSwipeView, 0, mMainHeight);
             ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
         } else {
-            mDragHelper.smoothSlideViewTo(mSwipeView, 0, getMeasuredHeight()-mSwipeHeight);
+            mDragHelper.smoothSlideViewTo(mSwipeView, 0, getMeasuredHeight() - mSwipeHeight);
             ViewCompat.postInvalidateOnAnimation(VerticalSwipe.this);
         }
     }
@@ -132,6 +154,7 @@ public class VerticalSwipe extends FrameLayout {
         super.onSizeChanged(w, h, oldw, oldh);
         mMainHeight = mMainView.getMeasuredHeight();
         mSwipeHeight = mSwipeView.getMeasuredHeight();
+        mTop = mMainHeight;
         System.out.println("MainHeight:" + mMainHeight);
         System.out.println("SwipeHeight:" + mSwipeView.getMeasuredHeight());
     }
@@ -140,7 +163,7 @@ public class VerticalSwipe extends FrameLayout {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         System.out.println("MainHeight:" + mMainHeight);
         System.out.println("SwipeHeight:" + mSwipeHeight);
-        mMainView.layout(0, 0, getMeasuredWidth(), mMainHeight);
-        mSwipeView.layout(0, mMainHeight, getMeasuredWidth(), mMainHeight + mSwipeHeight);
+        mMainView.layout(0, -(int) (mMaxOffsetMainView * 1.0f * mProgress), getMeasuredWidth(), mMainHeight);
+        mSwipeView.layout(0, mTop, getMeasuredWidth(), mMainHeight + mSwipeHeight);
     }
 }
